@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { InputAddItemComponent } from '../../components/input-add-item/input-add-item.component';
 import { IListItems } from '../../interface/IListItems.interface';
 import { InputListItemComponent } from '../../components/input-list-item/input-list-item.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list',
@@ -85,18 +86,38 @@ export class ListComponent {
   }
 
   public deleteItem(id: string) {
-    this.#setListItems.update((oldValue: IListItems[]) => {
-      return oldValue.filter((res) => res.id !== id);
-    });
+    Swal.fire({
+      title: "Tem certeza?",
+      text: "Você não poderá reverter isso!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, delete este item!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.#setListItems.update((oldValue: IListItems[]) => {
+          return oldValue.filter((res) => res.id !== id);
+        });
 
-    return localStorage.setItem(
-      '@my-list',
-      JSON.stringify(this.#setListItems())
-    );
+        return localStorage.setItem(
+          '@my-list',
+          JSON.stringify(this.#setListItems())
+        );
+      }
+    });
   }
 
   public deleteAllItems() {
-    localStorage.removeItem('@my-list');
-    return this.#setListItems.set(this.#parseItems());
+    Swal.fire({
+      title: "Tem certeza?",
+      text: "Você não poderá reverter isso!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, delete tudo!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('@my-list');
+        return this.#setListItems.set(this.#parseItems());
+      }
+    });
   }
 }
