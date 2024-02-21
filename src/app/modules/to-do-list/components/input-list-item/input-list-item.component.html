@@ -11,9 +11,11 @@
               [id]="item.id"
               [value]="item.value"
               placeholder="Adicione um valor"
-              autofocus />
+              autofocus
+              (input)="updateItemText(item.id, inputValue.value)" />
 
        <button class="btn btn-danger-circle"
+               (click)="deleteItemText(item.id)"
                title="Delete este item"></button>
 </label>
 
